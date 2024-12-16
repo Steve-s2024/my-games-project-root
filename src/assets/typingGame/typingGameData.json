@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "difficulty": "easy",
+      "text": "The quick brown fox jumps over the lazy dog. This sentence is often used to test typing skills because it contains every letter of the alphabet."
+    },
+    {
+      "id": 2,
+      "difficulty": "medium",
+      "text": "Typing is an essential skill in the modern world. By practicing regularly, you can improve your speed and accuracy, making daily tasks more efficient."
+    },
+    {
+      "id": 3,
+      "difficulty": "hard",
+      "text": "In the intricate world of technology, efficiency and precision are paramount. Typing accurately not only ensures clarity but also saves valuable time in professional communication."
+    },
+    {
+      "id": 4,
+      "difficulty": "easy",
+      "text": "Learning to type can be fun and rewarding. Start with simple sentences and gradually move to more complex ones as you build confidence."
+    },
+    {
+      "id": 5,
+      "difficulty": "medium",
+      "text": "Practice makes perfect. Typing without looking at the keyboard takes time, but the benefits of mastering this skill are immense, from faster work completion to fewer errors."
+    },
+    {
+      "id": 6,
+      "difficulty": "hard",
+      "text": "The adaptability of the human mind is astonishing. With consistent practice, even the most challenging typing patterns can become second nature, leading to remarkable proficiency."
+    }
+]
+  
