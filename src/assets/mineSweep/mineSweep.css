@@ -1,0 +1,54 @@
+#mineSweepContentWrapper{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#mineSweepContent {
+    width: fit-content;
+
+}
+#mineSweepRow{
+    width: fit-content;
+    height: 2rem;
+}
+#mineSweepCell {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    float: left;
+    background-color: gray;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+.cellVal, .cellFlag{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    align-content: center;
+    margin: 0;
+}
+.cellVal{
+    background-color: wheat;
+}
+.cellFlag {
+    color: brown;
+    font-weight: bold;
+}
+.mineCell {
+    font-size: 3rem;
+    font-weight: bold;
+    color: firebrick;
+}
+.difficultyList, .sizeList{
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    box-sizing: border-box;
+}

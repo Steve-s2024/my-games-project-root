@@ -12,7 +12,6 @@
         </p>
       </div>
     </div>
-    <div id = "pressToStart" class = "button" v-if="status === 'pending'">press any key to start</div>
   </div>
   <GameResultPannel
   v-if="showResultPannel"

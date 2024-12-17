@@ -160,6 +160,12 @@ body {
     height: 1.5rem;
     align-content: center;
 }
+.button:hover{
+    opacity: 0.7;
+}
+.chosenButton{
+    background-color: burlywood;
+}
 #resultPannel{
     position: absolute;
     top: 25%;
