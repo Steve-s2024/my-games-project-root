@@ -1,0 +1,40 @@
+.gameDisplayBlock{
+    width: 20rem;
+    height: 30rem;
+    background-color: wheat;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 1rem;
+    float: left;
+}
+
+.blockHeader{
+    height: 10%;
+    width: 100%;
+}
+
+.blockImageWrapper{
+    width: 100%;
+    height: fit-content;
+}
+
+.blockImageWrapper>img{
+    width: 100%;
+    height: fit-content;
+    border-radius: 10%;
+    border: 1px solid black;
+}
+
+.blockButtonWrapper{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+}
+
+.gameDisplayBlock>div{
+    margin-bottom: 2%;
+}
+
+

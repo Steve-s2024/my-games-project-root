@@ -1,9 +1,10 @@
 <template>
   <nav id="navBar">
-    <router-link to="/HomePage">Home</router-link>
+    <router-link to="/">Home</router-link>
     <router-link to="/ChessGame">Chess</router-link>
-    <router-link to="/TypeingGame">Typing</router-link>
+    <router-link to="/TypingGame">Typing</router-link>
     <router-link to="/MineSweep">Mine Sweep</router-link>
+    <router-link to="/BoxPhysics">Box Physics</router-link>
   </nav>
   <router-view v-slot="{ Component }">
     <keep-alive>

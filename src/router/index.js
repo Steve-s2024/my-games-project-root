@@ -3,9 +3,10 @@ import HomePage from '../views/HomePage.vue'
 import ChessGame from '../views/ChessGame.vue'
 import TypeingGame from '@/views/TypeingGame.vue'
 import MineSweep from '@/views/MineSweep.vue'
+import BoxPhysics from '@/views/BoxPhysics.vue'
 const routes = [
   {
-    path: '/homePage',
+    path: '/',
     name: 'HomePage',
     component: HomePage
   },
@@ -15,7 +16,7 @@ const routes = [
     component: ChessGame
   },
   {
-    path: '/Typeinggame',
+    path: '/TypingGame',
     name: 'TypingGame',
     component: TypeingGame
   },
@@ -23,6 +24,11 @@ const routes = [
     path: '/MineSweep',
     name: 'MineSweep',
     component: MineSweep
+  },
+  {
+    path: '/BoxPhysics',
+    name: 'BoxPhysics',
+    component: BoxPhysics
   }
 ]
 
