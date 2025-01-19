@@ -23,7 +23,7 @@
 <script scoped>
 import ButtomBar from '@/components/ButtomBar.vue'
 import GameResultPannel from '@/components/GameResultPannel.vue'
-import { TimeFormat } from '@/assets/generalClasses/timeFormat'
+import { TimeFormat } from '@/assets/js/generalClasses/timeFormat'
 import paragraphs from '@/assets/typingGame/typingGameData.json'
 import '../assets/typingGame/typingGame.css'
 

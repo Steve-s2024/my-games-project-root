@@ -38,12 +38,12 @@
   />
 </template>
 <script>
-import '../assets/mineSweep/mineSweep.css'
-import { MineSweep } from '../assets/mineSweep/mineSweep.js'
+import '../assets/js/mineSweep/mineSweep.css'
+import { MineSweep } from '../assets/js/mineSweep/mineSweep.js'
 import MineSweepBoard from '@/components/MineSweepBoard.vue'
 import ButtomBar from '@/components/ButtomBar.vue'
 import GameResultPannel from '@/components/GameResultPannel.vue'
-import { TimeFormat } from '@/assets/generalClasses/timeFormat'
+import { TimeFormat } from '@/assets/js/generalClasses/timeFormat'
 export default {
   name: 'MineSweep',
   components: {

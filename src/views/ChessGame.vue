@@ -35,9 +35,9 @@ import ChessGameHeader from '@/components/ChessGameHeader.vue'
 import ButtomBar from '@/components/ButtomBar.vue'
 import GameResultPannel from '@/components/GameResultPannel.vue'
 import LayoutInfoBar from '@/components/LayoutInfoBar.vue'
-import chessLayouts from '@/assets/chess/chessLayouts.json'
-import { Chess } from '@/assets/chess/chessClasses.js'
-import { TimeFormat } from '@/assets/generalClasses/timeFormat'
+import chessLayouts from '@/assets/js/chess/chessLayouts.json'
+import { Chess } from '@/assets/js/chess/chessClasses.js'
+import { TimeFormat } from '@/assets/js/generalClasses/timeFormat'
 
 export default {
   name: 'ChessGame',

@@ -12,6 +12,7 @@ class Box {
 }
 
 class MovableBox {
+    id = 0
     xAccel = 0
     xVel = 0
     yAccel = 0
@@ -19,7 +20,8 @@ class MovableBox {
     box = null
     fps = 0
     maxVel = 400
-    constructor (coor, size, fps) {
+    constructor (id, coor, size, fps) {
+      this.id = id
       this.box = new Box(coor, size)
       this.fps = fps
     }

@@ -65,7 +65,7 @@ export default {
       updateInterval: null,
       height: 500,
       width: 500,
-      fps: 20
+      fps: 30
     }
   },
   created () {
@@ -113,6 +113,9 @@ export default {
       }
       if (key === 'r') {
         this.boxPhysics.removeBox()
+      }
+      if (key === 'q') {
+        this.boxPhysics.box.xVel += this.boxPhysics.box.xVel > 0 ? 300 : -300
       }
     },
     keyLeft (event) {

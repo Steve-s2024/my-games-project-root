@@ -31,7 +31,7 @@
   <div @click="moveBoxGame.addObstacle([parseInt(500 * Math.random()), 0], [20, 20])" class="button">add obstacle</div>
 </template>
 <script scoped>
-import { MoveBoxGame } from '@/assets/boxClasses/moveBoxGame'
+import { MoveBoxGame } from '@/assets/js/boxClasses/moveBoxGame'
 import '@/assets/styles/moveBoxGame.css'
 
 export default {
