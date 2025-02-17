@@ -17,22 +17,6 @@
       :HEIGHT="8"
       :KEYBOARD="chess.keyboard"
       :clickBlock="clickBlcok"
-      :imgsObj="
-        {
-        whitepawn: '/imgs/chess/whitePawn.png',
-        whiterook: '/imgs/chess/whiteRook.png',
-        whiteknight: '/imgs/chess/whiteKnight.png',
-        whitebishop: '/imgs/chess/whiteBishop.png',
-        whitequeen: '/imgs/chess/whiteQueen.png',
-        whiteking: '/imgs/chess/whiteKing.png',
-        blackpawn: '/imgs/chess/blackPawn.png',
-        blackrook: '/imgs/chess/blackRook.png',
-        blackknight: '/imgs/chess/blackKnight.png',
-        blackbishop: '/imgs/chess/blackBishop.png',
-        blackqueen: '/imgs/chess/blackQueen.png',
-        blackking: '/imgs/chess/blackKing.png'
-      }
-      "
       />
       <ButtomBar
       :restart="restart"
@@ -43,7 +27,6 @@
     v-if="showResultPannel"
     :gameResults="gameResults"
     />
-
   </div>
 </template>
 <script>

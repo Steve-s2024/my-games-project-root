@@ -16,21 +16,7 @@
           v-if="KEYBOARD[rowIdx][colIdx] != null"
           :type="KEYBOARD[rowIdx][colIdx].type"
           :side="KEYBOARD[rowIdx][colIdx].side"
-          :imgSrc="imgsObj[(
-            KEYBOARD[rowIdx][colIdx].side +
-            KEYBOARD[rowIdx][colIdx].name
-          )]"
           />
-          <!-- :imgSrc="imgsObj[(
-            (side in KEYBOARD[rowIdx][colIdx] ? KEYBOARD[rowIdx][colIdx].side : '') +
-            (name in KEYBOARD[rowIdx][colIdx] ? KEYBOARD[rowIdx][colIdx].name : '')
-          )]" -->
-          <div class="rowIdx" v-if="colIdx == KEYBOARD[0].length-1">
-            {{ rowIdx+1 }}
-          </div>
-          <div class="colIdx" v-if="rowIdx == 0">
-            {{ String.fromCharCode((KEYBOARD[0].length-colIdx-1)+65) }}
-          </div>
         </div>
       </div>
     </div>
@@ -44,7 +30,7 @@ export default {
   components: {
     PieceComp
   },
-  props: ['WIDTH', 'HEIGHT', 'KEYBOARD', 'clickBlock', 'imgsObj'],
+  props: ['WIDTH', 'HEIGHT', 'KEYBOARD', 'clickBlock'],
   data () {
     return {
       BLOCK_WIDTH: 5,

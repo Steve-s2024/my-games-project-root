@@ -98,7 +98,6 @@ body {
     height: var(--block-height);
     border: 1px solid black;
     box-sizing: border-box;
-    position: relative;
 }
 .whiteBlock, .blackBlock {
     display: flex;
@@ -137,27 +136,6 @@ body {
 }
 .piece:hover{
     border: 4px solid;
-}
-.piece>.imgWrapper{
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-.piece>.imgWrapper>img{
-    width: 140%;
-    height: 140%;
-}
-.rowIdx{
-    position: absolute;
-    right: -25%;
-}
-.colIdx{
-    position: absolute;
-    top: -25%;
 }
 .king{
     color: rgb(221 190 13 / 83%);
