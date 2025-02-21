@@ -1,0 +1,27 @@
+.messageWrapper{
+    width: 20%;
+    margin-left: 40%;
+    position: fixed;
+    top: 4rem;
+    min-width: 15rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightblue;
+    opacity: 0.9;
+    border-radius: 10%;
+    overflow: hidden;
+    color: white;
+    transition: opacity 2s ease;
+}
+#warning{
+  background-color: crimson!important;
+}
+#regular{
+  background-color: green!important;
+}
+.hidden{
+  opacity: 0;
+}
