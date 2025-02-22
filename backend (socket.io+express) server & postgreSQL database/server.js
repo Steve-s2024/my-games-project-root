@@ -2,13 +2,27 @@ require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-
-// for the socket io server
-const {Server} = require('socket.io')
+const { Server } = require('socket.io');
+const http = require('http');
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(cors());
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Set up Socket.io on the created server
+const io = new Server(server, {
+  cors: {
+    origin: '*', 
+    methods: ['GET', 'POST']
+  }
+});
+
+
 
 const pool = new Pool({
     user: 'postgres',
@@ -17,7 +31,6 @@ const pool = new Pool({
     password: 'S434567056s$',
     port: 5432
 });         
-
 
 
 //1
@@ -67,16 +80,9 @@ app.get('/getChessByName', async (req, res) => {
 
 
 //end of database back end
-const expressSever = app.listen(3000, () => {
-    console.log('server running on port 3000')
-})
-
-//start of socket.io back end
-const io = new Server(expressSever, {
-    cors: [
-        'http://localhost:3000',
-    ]
-})
+server.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
+});
 
 // maintain the info of room and the players inside rooms
 const rooms = new Map()
@@ -147,4 +153,5 @@ io.on('connection', socket => {
         io.to(roomId).emit('playerLeft', `player ${socket.id} has left the game!`)
     })
 })
+
 

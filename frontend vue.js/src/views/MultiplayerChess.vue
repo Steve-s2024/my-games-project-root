@@ -239,7 +239,7 @@ export default {
     },
     doInteractionWithServer () {
       // init the local socket for connecting to the server
-      this.socket = io('http://192.168.2.15:3000', {
+      this.socket = io('https://my-games-project-e2a91568bb20.herokuapp.com/', {
         auth: {
           authentication: 'this message is for authentication purpose!'
         },
