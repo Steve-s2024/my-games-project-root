@@ -4,6 +4,7 @@ import ChessGame from '../views/ChessGame.vue'
 import TypeingGame from '@/views/TypeingGame.vue'
 import MineSweep from '@/views/MineSweep.vue'
 import BoxPhysics from '@/views/BoxPhysics.vue'
+import MultiplayerChess from '@/views/MultiplayerChess.vue'
 const routes = [
   {
     path: '/',
@@ -29,6 +30,11 @@ const routes = [
     path: '/BoxPhysics',
     name: 'BoxPhysics',
     component: BoxPhysics
+  },
+  {
+    path: '/MultiplayerChess',
+    name: 'MultiplayerChess',
+    component: MultiplayerChess
   }
 ]
 

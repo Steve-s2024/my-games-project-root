@@ -187,9 +187,6 @@ body {
 .chosenButton{
     background-color: burlywood;
 }
-#openConfigureGamePannel{
-    margin-left: 34%;
-}
 #resultPannel{
     position: absolute;
     top: 25%;

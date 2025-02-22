@@ -16,10 +16,10 @@
     color: white;
     transition: opacity 2s ease;
 }
-#warning{
+.warning{
   background-color: crimson!important;
 }
-#regular{
+.regular{
   background-color: green!important;
 }
 .hidden{

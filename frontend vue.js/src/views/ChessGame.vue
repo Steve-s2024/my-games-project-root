@@ -11,6 +11,7 @@
       v-model="chess.currSide"
       :chess="chess"
       @shiftTextQueue="shiftTextQueue"
+      :auth="{undo:true, textQueue:true}"
       />
       <KeyboardComp
       @keyboardBlocksLoaded="LoadKeyboardBlocks"

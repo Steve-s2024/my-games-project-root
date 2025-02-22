@@ -498,6 +498,7 @@ class Chess {
     }
 
     endGame () {
+      console.log('game ended')
       this.status = 'ended'
       clearInterval(this.timeInterval)
     }
