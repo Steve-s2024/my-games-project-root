@@ -1,3 +1,6 @@
+you can access the program here: https://my-games-project-frontend-2a731435bbf8.herokuapp.com/
+if you want to contribute instead of playing, you can run it on your local computer by following the instruction below
+
 the project consist of two part
   1. frontend Vus.js
   2. backend Express server & PostgreSQL database
@@ -12,8 +15,10 @@ to run the application
      
 you shouldn't be able to use the backend database since it is configured to only recognized my postgresql databse with my user name and password. so, the project can't really support you to run the backend service.
 unless if you have postgreSQL and pgAdmin and know how to configure the database information to suit your case. 
-      you can open the file '/backend server & database/server.js' 
-      locate this part of the code:
+  
+  you can open the file '/backend server & database/server.js' 
+  locate this part of the code:
+          
           const pool = new Pool({
               user: 'postgres',
               host: 'localhost',
@@ -22,7 +27,7 @@ unless if you have postgreSQL and pgAdmin and know how to configure the database
               port: 5432
           });
 
-      change the information to match your pgAdmin information. port, database, and host information should remain the same
+  change the information to match your pgAdmin information. port, database, and host information should remain the same
 
             
 if you made the changes, now create the database
