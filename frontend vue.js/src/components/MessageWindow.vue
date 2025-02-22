@@ -1,6 +1,8 @@
 <template>
-  <div class="messageWrapper" id="messageWindow">
-    {{ message }}
+  <div class="centeringWrapper">
+    <div class="messageWrapper" id="messageWindow">
+      {{ message }}
+    </div>
   </div>
 </template>
 <style scoped src="@/assets/styles/messageWindow.css"></style>
@@ -28,15 +30,16 @@ export default {
   },
   watch: {
     showMessage (newVal, oldVal) {
-      this.toggleVisibility()
+      setTimeout(() => { // for making the transition animation happen when v-if recreated the component
+        this.toggleVisibility()
+      }, 100)
     },
     messageType (newVal, oldVal) {
-      console.log(newVal, oldVal)
+      // console.log(newVal, oldVal)
       if (oldVal !== '') {
         this.messageWindow.classList.remove(oldVal)
       }
       if (newVal !== '') {
-        console.log(newVal)
         this.messageWindow.classList.add(newVal)
       }
     }
@@ -46,15 +49,14 @@ export default {
     if (this.messageType !== '') {
       this.messageWindow.classList.add(this.messageType)
     }
-    this.toggleVisibility()
   },
   methods: {
     toggleVisibility () {
       // console.log(`showMessage changed from ${oldVal} to ${newVal}`)
       if (this.showMessage === false) {
-        this.messageWindow.classList.add('hidden')
+        this.messageWindow.classList.remove('show')
       } else {
-        this.messageWindow.classList.remove('hidden')
+        this.messageWindow.classList.add('show')
       }
     }
   }

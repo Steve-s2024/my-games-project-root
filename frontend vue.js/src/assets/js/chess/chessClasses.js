@@ -76,12 +76,12 @@ class Chess {
       }
     }
 
-    makeChessMove (moves) {
+    async makeChessMove (moves) {
       this.textQueue.length = 0
       if (this.status === 'ended') return
       if (moves.length == 1) {
         const [piece, coordinate] = moves[0]
-        const result = piece.checkMove(coordinate, this)
+        const result = await piece.checkMove(coordinate, this)
         if (Array.isArray(result)) {
           return this[result[0]](...result.slice(1))
         } else if (result == true) {
@@ -93,6 +93,7 @@ class Chess {
           return false
         }
       }
+
       const moveLen = moves.length
       this.moveRecord.push(moveLen)
       for (let idx = 0; idx < moveLen; idx++) {
@@ -129,21 +130,32 @@ class Chess {
     }
 
     promotion (piece) {
-      const coordinate = piece.coordinate
-      const side = piece.side
-      if (
-        (side == 'white' && coordinate[0] == this.keyboard.length - 1) ||
-        (side == 'black' && coordinate[0] == 0)
-      ) {
+      return new Promise((resolve) => { // make the promise so that the calls below it in the call stack will also wait for it to finish execute
+        // console.log('enter promotion', piece)
         let target
         do {
           target = prompt('enter knight/bishop/rook/queen')
         }
         while (['knight', 'bishop', 'rook', 'queen'].indexOf(target) == -1)
-        this.removeFromKeyboard(piece)
-        this.addPiece(side, coordinate, target)
-        this.varifyMoveByCheckmate([target, coordinate])
-      }
+        setTimeout(() => { // the settimeout is quite necessary, let me explain.
+          /*
+          the prompt in the do while loop will stop every call from the call stack to execute and wait util the prompt is resolve properly
+          all the calls in this call stack is labeled with async and await: they are clickBlock -> makeChessMove -> checkMove -> promotion.
+          basically, all the three functions will be waiting for promotion to finish execute and return the promise before they continue
+
+          the reason the setTimeout is necessary is because it will not make the calls from call stack to wait, so by the time the 100ms timeout,
+          the clickBlock and everything above in the call stack will finish executing, and the pawn will be already
+          moved to the new position of the keyboard it intended but without being actually promoted (the pawn stay as pawn)
+          eventually, about 100ms after the pawn moved, the logic below will execute and swap the pawn into the actual piece for the intended promotion.
+          */
+          const coordinate = piece.coordinate
+          const side = piece.side
+          this.removeFromKeyboard(piece)
+          this.addPiece(side, coordinate, target)
+          this.varifyMoveByCheckmate([target, coordinate])
+        }, 100)
+        resolve()
+      })
     }
 
     castling (king, rook) {
@@ -324,6 +336,7 @@ class Chess {
     }
 
     addHistory (piece, newCoordinate) {
+      // console.log('history added')
       const [nRow, nCol] = newCoordinate
 
       const tempPiece = piece
@@ -337,6 +350,7 @@ class Chess {
     }
 
     undoHistory () {
+      // console.log('history undoing')
       if (this.status === 'ended') return
 
       if (this.moveRecord.length > 0) {
@@ -553,7 +567,7 @@ class Pawn extends Piece {
       super(side, coordinate, 'pawn')
     }
 
-    checkMove (newCoordinate, chess) {
+    async checkMove (newCoordinate, chess) {
       const keyboard = chess.keyboard
       const [nRow, nCol] = newCoordinate
       const [oRow, oCol] = this.coordinate
@@ -575,14 +589,10 @@ class Pawn extends Piece {
         */
       if (result) {
         if (this.side == 'white' && nRow == keyboard.length - 1) {
-          setTimeout(() => {
-            chess.promotion(this)
-          }, 100)
+          await chess.promotion(this, newCoordinate)
         }
         if (this.side == 'black' && nRow == 0) {
-          setTimeout(() => {
-            chess.promotion(this)
-          }, 100)
+          await chess.promotion(this, newCoordinate)
         }
       }
       return result

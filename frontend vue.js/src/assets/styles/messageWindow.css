@@ -1,6 +1,11 @@
+.centeringWrapper{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .messageWrapper{
     width: 20%;
-    margin-left: 40%;
     position: fixed;
     top: 4rem;
     min-width: 15rem;
@@ -10,7 +15,7 @@
     justify-content: center;
     align-items: center;
     background-color: lightblue;
-    opacity: 0.9;
+    opacity: 0;
     border-radius: 10%;
     overflow: hidden;
     color: white;
@@ -22,6 +27,6 @@
 .regular{
   background-color: green!important;
 }
-.hidden{
-  opacity: 0;
+.show{
+  opacity: 0.9!important;
 }

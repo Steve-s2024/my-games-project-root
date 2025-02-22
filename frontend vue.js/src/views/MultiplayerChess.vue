@@ -112,7 +112,7 @@ export default {
     LoadKeyboardBlocks (KEY_BOARD_BLOCKS) {
       this.KEY_BOARD_BLOCKS = KEY_BOARD_BLOCKS
     },
-    clickBlcok (coor) {
+    async clickBlcok (coor) {
       const move = [[this.chess.currPiece, coor]]
       // console.log(this.chess.currSide, this.userSide)
       if (this.chess.currSide !== this.userSide) return // check if it is the user's turn to make move
@@ -136,7 +136,7 @@ export default {
         // console.log('the player want to move the piece')
         // make chess move
         const curCoor = JSON.parse(JSON.stringify(this.chess.currPiece.coordinate)) // take deep copy of the coordinate of current piece before the move
-        if (this.chess.makeChessMove(move)) {
+        if (await this.chess.makeChessMove(move)) {
           this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
           this.chess.currPiece = null // remove the highlight effect
         }
@@ -152,7 +152,7 @@ export default {
           this.removeHighLight(this.chess.currPiece)
           this.chess.currPiece = piece
           this.addHighLight(this.chess.currPiece)
-        } else if (this.chess.makeChessMove(move)) {
+        } else if (await this.chess.makeChessMove(move)) {
           // make a chess move
           this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
           this.chess.currPiece = null // remove the highlight effect
@@ -240,12 +240,8 @@ export default {
     doInteractionWithServer () {
       // init the local socket for connecting to the server
       this.socket = io('https://my-games-project-e2a91568bb20.herokuapp.com/', {
-        auth: {
-          authentication: 'this message is for authentication purpose!'
-        },
-        query: {
-          param1: 'stephen'
-        }
+        withCredentials: true,
+        transports: ['websocket'] // Try WebSocket first
       })
       this.socket.emit('joinRoom')
       this.socket.on('playerJoined', numOfPlayer => {

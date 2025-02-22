@@ -55,6 +55,7 @@
 
   </div>
   <MessageWindow
+  v-show="showMessage"
   :messageType="'regular'"
   :message="'new game saved to local hard disk!'"
   :showMessage="showMessage"
