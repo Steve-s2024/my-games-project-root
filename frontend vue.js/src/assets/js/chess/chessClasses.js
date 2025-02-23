@@ -77,6 +77,7 @@ class Chess {
     }
 
     makeChessMove (moves) {
+      // console.log(moves[0][0].coordinate[0], moves[0][0].coordinate[1], moves[0][1][0], moves[0][1][1])
       this.textQueue.length = 0
       if (this.status === 'ended') return
       // single move
@@ -168,6 +169,7 @@ class Chess {
       return this.makeChessMove(compositeMove)
     }
 
+    // zero usage
     checkmateChecker (king, piece, newCoordinate) {
       if (piece == null || newCoordinate == null) return
       // console.log("this function(checkmate checker) is checking for checkmate in the new move")
@@ -289,7 +291,9 @@ class Chess {
         if (
           target != null && target.side != piece.side &&
           target.type == 'pawn' &&
-          target.checkMove(piece.coordinate, this)
+          // target.checkMove(piece.coordinate, this) // i want to check to see if the move is valid, but i don't want to invoke the promotion because its just checking if
+          // the piece is a thread/danger. I am not actually moving the piece
+          target.checkMoveWithoutInvokePromotion(piece.coordinate, this)
         ) {
           return target
         }
@@ -564,46 +568,53 @@ class Piece {
 }
 
 class Pawn extends Piece {
-    name = 'pawn'
-    moved = false
-    constructor (side = 'white', coordinate = [0, 0]) {
-      super(side, coordinate, 'pawn')
-    }
+  name = 'pawn'
+  moved = false
+  constructor (side = 'white', coordinate = [0, 0]) {
+    super(side, coordinate, 'pawn')
+  }
 
-    checkMove (newCoordinate, chess) {
-      const keyboard = chess.keyboard
-      const [nRow, nCol] = newCoordinate
-      const [oRow, oCol] = this.coordinate
-      let result
-      if (this.side == 'white') {
-        const piece = keyboard[nRow][nCol]
-        result = (
-          (nCol == oCol && nRow == oRow + 1) ||
-          (Math.abs(nCol - oCol) == 1 && nRow == oRow + 1 && piece && piece.side != this.side) ||
-          (!this.moved && nCol == oCol && nRow == oRow + 2 && oRow == 1)
-        )
+  checkMove (newCoordinate, chess) {
+    const keyboard = chess.keyboard
+    const nRow = newCoordinate[0]
+    const result = this.checkMoveWithoutInvokePromotion(newCoordinate, chess)
+    /*
+      checking for if chess should promote this pawn
+      */
+    if (result) {
+      if (
+        (this.side == 'white' && nRow == keyboard.length - 1) ||
+        (this.side == 'black' && nRow == 0)
+      ) {
+        chess.promotion(this)
       }
-      if (this.side == 'black') { // 7, 5   <--   6, 4
-        const piece = keyboard[nRow][nCol]
-        result = (
-          (nCol == oCol && nRow == oRow - 1) ||
-          (Math.abs(nCol - oCol) == 1 && nRow == oRow - 1 && piece && piece.side != this.side) ||
-          (!this.moved && nCol == oCol && nRow == oRow - 2 && oRow == chess.KEYBOARD_HEIGHT - 2)
-        )
-      }
-      /*
-        checking for if chess should promote this pawn
-        */
-      if (result) {
-        if (
-          (this.side == 'white' && nRow == keyboard.length - 1) ||
-          (this.side == 'black' && nRow == 0)
-        ) {
-          chess.promotion(this)
-        }
-      }
-      return result
     }
+    return result
+  }
+
+  checkMoveWithoutInvokePromotion (newCoordinate, chess) {
+    const keyboard = chess.keyboard
+    const [nRow, nCol] = newCoordinate
+    const [oRow, oCol] = this.coordinate
+    let result
+    if (this.side == 'white') {
+      const piece = keyboard[nRow][nCol]
+      result = (
+        (nCol == oCol && nRow == oRow + 1) ||
+        (Math.abs(nCol - oCol) == 1 && nRow == oRow + 1 && piece && piece.side != this.side) ||
+        (!this.moved && nCol == oCol && nRow == oRow + 2 && oRow == 1)
+      )
+    }
+    if (this.side == 'black') { // 7, 5   <--   6, 4
+      const piece = keyboard[nRow][nCol]
+      result = (
+        (nCol == oCol && nRow == oRow - 1) ||
+        (Math.abs(nCol - oCol) == 1 && nRow == oRow - 1 && piece && piece.side != this.side) ||
+        (!this.moved && nCol == oCol && nRow == oRow - 2 && oRow == chess.KEYBOARD_HEIGHT - 2)
+      )
+    }
+    return result
+  }
 }
 
 class Bishop extends Piece {

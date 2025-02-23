@@ -126,7 +126,7 @@ export default {
     LoadKeyboardBlocks (KEY_BOARD_BLOCKS) {
       this.KEY_BOARD_BLOCKS = KEY_BOARD_BLOCKS
     },
-    async clickBlcok (coor) {
+    clickBlcok (coor) {
       const move = [[this.chess.currPiece, coor]]
       // console.log(this.chess.currSide, this.userSide)
       if (this.chess.currSide !== this.userSide) return // check if it is the user's turn to make move
@@ -150,8 +150,12 @@ export default {
         // console.log('the player want to move the piece')
         // make chess move
         const curCoor = JSON.parse(JSON.stringify(this.chess.currPiece.coordinate)) // take deep copy of the coordinate of current piece before the move
-        if (await this.chess.makeChessMove(move)) {
-          this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
+        if (this.chess.makeChessMove(move)) {
+          if (this.checkIfPromote(coor)) {
+            this.sendPromotionInfo(curCoor, coor) // hold the information if its a promotion, and use a different API to sync the other player
+          } else {
+            this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
+          }
           this.chess.currPiece = null // remove the highlight effect
         }
       } else if (currPiece != null && piece != null) {
@@ -166,9 +170,13 @@ export default {
           this.removeHighLight(this.chess.currPiece)
           this.chess.currPiece = piece
           this.addHighLight(this.chess.currPiece)
-        } else if (await this.chess.makeChessMove(move)) {
+        } else if (this.chess.makeChessMove(move)) {
           // make a chess move
-          this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
+          if (this.checkIfPromote(coor)) {
+            this.sendPromotionInfo(curCoor, coor) // hold the information if its a promotion, and use a different API to sync the other player
+          } else {
+            this.socket.emit('makeMove', JSON.stringify([curCoor, coor])) // sync the move to the server, and to the other user
+          }
           this.chess.currPiece = null // remove the highlight effect
         }
       }
@@ -259,7 +267,6 @@ export default {
         transports: ['websocket'] // Try WebSocket first
       })
       */
-
       this.socket = io('http://192.168.2.15:3000', {
         withCredentials: true,
         transports: ['websocket'] // Try WebSocket first
@@ -314,6 +321,69 @@ export default {
         this.showMessageWindow(message, 'warning')
         this.numOfPlayer = numOfPlayer
       })
+      this.socket.on('promotionInfo', data => {
+        this.synchronizePromoteInfo(JSON.parse(data))
+      })
+    },
+    checkIfPromote (newCoor) {
+      const piece = this.chess.keyboard[newCoor[0]][newCoor[1]]
+      const result = (
+        (piece != null && piece.type === 'pawn') &&
+        (
+          (piece.side === 'white' && newCoor[0] === this.chess.KEYBOARD_HEIGHT - 1) ||
+          (piece.side === 'black' && newCoor[0] === 0)
+        )
+      )
+      if (result) {
+        console.log('promotion happened')
+      }
+      return result
+    },
+    sendPromotionInfo (oldCoor, newCoor) {
+      /*
+      here i will send out the updated promotion information to the other player to instruct them of what type of piece to promote in the last move
+      to learn the type of promotion, i need to wait for 100ms until the promotion have already happened.
+      */
+      setTimeout(() => {
+        this.socket.emit('syncPromotion', JSON.stringify({
+          type: this.chess.keyboard[newCoor[0]][newCoor[1]].type,
+          coors: [oldCoor, newCoor]
+        }))
+      }, 100)
+    },
+    synchronizePromoteInfo (data) {
+      /*
+      here i handled the chess logic outside of the chess.js out of necessity, i need the information of promotion from the other player. and do the promotion without
+      calling the promotion method inside chess.js. because that method will invoke the prompt, which should not show up to this player.
+      */
+      const { type, coors } = data
+      // console.log(type, coors)
+
+      const [oldCoor, newCoor] = coors
+      const pawn = this.chess.keyboard[oldCoor[0]][oldCoor[1]]
+      const moves = [[pawn, newCoor]]
+
+      /*
+      the code fragment below is directly copy from the makeChessMove method from chess.js. it has been trimmed out of the unnecessary codes.
+      my job now is to reconstruct the pawn's move and prevent the prompt from apearing.
+      */
+      this.chess.textQueue.length = 0 // clear the text queue
+
+      const moveLen = moves.length
+      this.chess.moveRecord.push(moveLen)
+      const [piece, coordinate] = moves[0]
+      this.chess.loadMove(piece, coordinate)
+
+      /*
+      now, the move is loaded, I will replace the pawn with the actual promotion type intended.
+      the code is copied from promotion method in chess.js. it is been adjusted to optimize efficiency
+      */
+      const side = piece.side
+      this.chess.removeFromKeyboard(piece)
+      this.chess.addPiece(side, coordinate, type)
+      this.chess.varifyMoveByCheckmate()
+
+      this.chess.changeSide() // change the side
     }
   }
 }

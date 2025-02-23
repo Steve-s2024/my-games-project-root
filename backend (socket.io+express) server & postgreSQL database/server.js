@@ -131,11 +131,11 @@ function startChessGame(chessRoomId) {
         chessRoom[0].emit('moveMade', move) // let the other player know the new move
     })
 
-    chessRoom[0].on('promote', data => {
-        chessRoom[1].emit('promteHappened', data)
+    chessRoom[0].on('syncPromotion', data => {
+        chessRoom[1].emit('promotionInfo', data)
     })
-    chessRoom[1].on('promote', data => {
-        chessRoom[0].emit('promteHappened', data)
+    chessRoom[1].on('syncPromotion', data => {
+        chessRoom[0].emit('promotionInfo', data)
     })
 }
 
