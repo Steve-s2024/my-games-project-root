@@ -76,12 +76,13 @@ class Chess {
       }
     }
 
-    async makeChessMove (moves) {
+    makeChessMove (moves) {
       this.textQueue.length = 0
       if (this.status === 'ended') return
+      // single move
       if (moves.length == 1) {
         const [piece, coordinate] = moves[0]
-        const result = await piece.checkMove(coordinate, this)
+        const result = piece.checkMove(coordinate, this)
         if (Array.isArray(result)) {
           return this[result[0]](...result.slice(1))
         } else if (result == true) {
@@ -94,12 +95,14 @@ class Chess {
         }
       }
 
+      // composite move
       const moveLen = moves.length
       this.moveRecord.push(moveLen)
       for (let idx = 0; idx < moveLen; idx++) {
         const [piece, coordinate] = moves[idx]
         this.loadMove(piece, coordinate)
       }
+
       // console.log('load move complete, start checking')
       if (this.varifyMoveByCheckmate(moves[moves.length - 1])) {
         // console.log('move completed')
@@ -130,32 +133,29 @@ class Chess {
     }
 
     promotion (piece) {
-      return new Promise((resolve) => { // make the promise so that the calls below it in the call stack will also wait for it to finish execute
-        // console.log('enter promotion', piece)
-        let target
-        do {
-          target = prompt('enter knight/bishop/rook/queen')
-        }
-        while (['knight', 'bishop', 'rook', 'queen'].indexOf(target) == -1)
-        setTimeout(() => { // the settimeout is quite necessary, let me explain.
-          /*
-          the prompt in the do while loop will stop every call from the call stack to execute and wait util the prompt is resolve properly
-          all the calls in this call stack is labeled with async and await: they are clickBlock -> makeChessMove -> checkMove -> promotion.
-          basically, all the three functions will be waiting for promotion to finish execute and return the promise before they continue
-
-          the reason the setTimeout is necessary is because it will not make the calls from call stack to wait, so by the time the 100ms timeout,
-          the clickBlock and everything above in the call stack will finish executing, and the pawn will be already
-          moved to the new position of the keyboard it intended but without being actually promoted (the pawn stay as pawn)
-          eventually, about 100ms after the pawn moved, the logic below will execute and swap the pawn into the actual piece for the intended promotion.
-          */
+      // console.log('enter promotion', piece)
+      let target
+      do {
+        target = prompt('enter knight/bishop/rook/queen')
+      }
+      while (['knight', 'bishop', 'rook', 'queen'].indexOf(target) == -1)
+      setTimeout(() => { // the settimeout is quite necessary, let me explain.
+        /*
+        the reason the setTimeout is necessary is because it will not make the calls from call stack to wait, so by the time the 100ms timeout,
+        everything below promotion() in the call stack will finished executing, and the pawn will be already
+        moved to the new position of the keyboard it intended but without being actually promoted (the pawn stay as pawn)
+        eventually, about 100ms after the pawn moved, the logic below will execute and swap the pawn into the actual piece for the intended promotion.
+        */
+        if (this.currSide != piece.side) { // the side is changed, so the piece did get moved to the new position
           const coordinate = piece.coordinate
           const side = piece.side
           this.removeFromKeyboard(piece)
           this.addPiece(side, coordinate, target)
-          this.varifyMoveByCheckmate([target, coordinate])
-        }, 100)
-        resolve()
-      })
+          this.changeSide() // change back to the side before, and varify if check mate with the promted peice
+          this.varifyMoveByCheckmate()
+          this.changeSide() // change the side back
+        }
+      }, 100)
     }
 
     castling (king, rook) {
@@ -332,6 +332,7 @@ class Chess {
           return target
         }
       }
+
       return null
     }
 
@@ -377,6 +378,7 @@ class Chess {
     }
 
     varifyMoveByCheckmate () {
+      // console.log('varifyMoveByCheckmate')
       let result = true
 
       const king = this.currSide == 'white' ? this.whiteKing : this.blackKing
@@ -394,10 +396,11 @@ class Chess {
         this.addText('the move did resolved the current checkmate')
         this.updateCheckmatePiece(null)
       }
-
       if (result == true) {
+        // console.log('start checking checkmate')
         const oppisiteKing = this.currSide == 'white' ? this.blackKing : this.whiteKing
-        if (this.checkIfInDanger(oppisiteKing) != null) {
+        const result = this.checkIfInDanger(oppisiteKing)
+        if (result != null) {
           // console.log(`checkmate the ${oppisiteKing.side} king!`)
           this.addText(`checkmate the ${oppisiteKing.side} king!`)
           this.updateCheckmatePiece(oppisiteKing)
@@ -567,32 +570,36 @@ class Pawn extends Piece {
       super(side, coordinate, 'pawn')
     }
 
-    async checkMove (newCoordinate, chess) {
+    checkMove (newCoordinate, chess) {
       const keyboard = chess.keyboard
       const [nRow, nCol] = newCoordinate
       const [oRow, oCol] = this.coordinate
       let result
       if (this.side == 'white') {
         const piece = keyboard[nRow][nCol]
-        result = (nCol == oCol && nRow == oRow + 1) ||
-            (Math.abs(nCol - oCol) == 1 && nRow == oRow + 1 && piece && piece.side != this.side) ||
-            (!this.moved && nCol == oCol && nRow == oRow + 2 && oRow == 1)
+        result = (
+          (nCol == oCol && nRow == oRow + 1) ||
+          (Math.abs(nCol - oCol) == 1 && nRow == oRow + 1 && piece && piece.side != this.side) ||
+          (!this.moved && nCol == oCol && nRow == oRow + 2 && oRow == 1)
+        )
       }
-      if (this.side == 'black') {
+      if (this.side == 'black') { // 7, 5   <--   6, 4
         const piece = keyboard[nRow][nCol]
-        result = (nCol == oCol && nRow == oRow - 1) ||
-            (Math.abs(nCol - oCol) == 1 && nRow == oRow - 1 && piece && piece.side != this.side) ||
-            (!this.moved && nCol == oCol && nRow == oRow - 2 && oRow == chess.KEYBOARD_HEIGHT - 2)
+        result = (
+          (nCol == oCol && nRow == oRow - 1) ||
+          (Math.abs(nCol - oCol) == 1 && nRow == oRow - 1 && piece && piece.side != this.side) ||
+          (!this.moved && nCol == oCol && nRow == oRow - 2 && oRow == chess.KEYBOARD_HEIGHT - 2)
+        )
       }
       /*
         checking for if chess should promote this pawn
         */
       if (result) {
-        if (this.side == 'white' && nRow == keyboard.length - 1) {
-          await chess.promotion(this, newCoordinate)
-        }
-        if (this.side == 'black' && nRow == 0) {
-          await chess.promotion(this, newCoordinate)
+        if (
+          (this.side == 'white' && nRow == keyboard.length - 1) ||
+          (this.side == 'black' && nRow == 0)
+        ) {
+          chess.promotion(this)
         }
       }
       return result

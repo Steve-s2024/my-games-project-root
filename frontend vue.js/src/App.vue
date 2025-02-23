@@ -6,6 +6,7 @@
     <router-link to="/MineSweep">Mine Sweep</router-link>
     <router-link to="/BoxPhysics">Box Physics</router-link>
     <router-link to="/MultiplayerChess">Multiplayer Chess</router-link>
+    <!-- <router-link to="/ChatBox">Chat Box</router-link> -->
   </nav>
   <router-view v-slot="{ Component }">
     <keep-alive>

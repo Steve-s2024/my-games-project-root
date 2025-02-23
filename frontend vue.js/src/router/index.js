@@ -5,6 +5,7 @@ import TypeingGame from '@/views/TypeingGame.vue'
 import MineSweep from '@/views/MineSweep.vue'
 import BoxPhysics from '@/views/BoxPhysics.vue'
 import MultiplayerChess from '@/views/MultiplayerChess.vue'
+import ChatBox from '@/components/ChatBox.vue'
 const routes = [
   {
     path: '/',
@@ -35,6 +36,11 @@ const routes = [
     path: '/MultiplayerChess',
     name: 'MultiplayerChess',
     component: MultiplayerChess
+  },
+  {
+    path: '/ChatBox',
+    name: 'ChatBox',
+    component: ChatBox
   }
 ]
 

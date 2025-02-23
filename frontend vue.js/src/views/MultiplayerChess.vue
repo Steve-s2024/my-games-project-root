@@ -1,6 +1,10 @@
 <template>
   <div id="contentWrapper">
     <div id="content">
+      <div class="chessRoomInfo">
+        <div class="chessRoomId">chess room: {{ roomId }}</div>
+        <div class="numOfPlayer">player online: {{ numOfPlayer }}</div>
+      </div>
       <ChessGameHeader
       v-model="chess.currSide"
       :chess="chess"
@@ -51,6 +55,13 @@
   :message="message"
   :showMessage="showMessage"
   />
+
+  <!-- the v-if is necessary because you should only load and connect with chat room after you get the id of this chess room, otherwise there will be redundant room being created-->
+  <ChatBox
+  v-if="roomId"
+  :oldSocket="socket"
+  :oldRoomId="roomId"
+  />
 </template>
 <script>
 import KeyboardComp from '@/components/KeyboardComp.vue'
@@ -65,6 +76,7 @@ import MessageWindow from '@/components/MessageWindow.vue'
 
 import io from 'socket.io-client'
 import ChessBottomBar from '@/components/ChessBottomBar.vue'
+import ChatBox from '@/components/ChatBox.vue'
 
 export default {
   name: 'ChessGame',
@@ -74,7 +86,8 @@ export default {
     GameResultPannel,
     ChessGameConfig,
     MessageWindow,
-    ChessBottomBar
+    ChessBottomBar,
+    ChatBox
   },
   data () {
     return {
@@ -92,7 +105,8 @@ export default {
       showMessage: false,
 
       socket: null,
-      userSide: ''
+      userSide: '',
+      roomId: null
     }
   },
   async mounted () {
@@ -238,14 +252,28 @@ export default {
       }, 2000)
     },
     doInteractionWithServer () {
+      /* use this when deploying, otherwise use the http://192.168.2.15 for development
       // init the local socket for connecting to the server
       this.socket = io('https://my-games-project-e2a91568bb20.herokuapp.com/', {
         withCredentials: true,
         transports: ['websocket'] // Try WebSocket first
       })
-      this.socket.emit('joinRoom')
+      */
+
+      this.socket = io('http://192.168.2.15:3000', {
+        withCredentials: true,
+        transports: ['websocket'] // Try WebSocket first
+      })
+
+      this.socket.emit('joinChessRoom')
+      this.socket.on('chessRoomInfo', data => {
+        const { numOfPlayer, roomId } = JSON.parse(data)
+        this.numOfPlayer = numOfPlayer
+        this.roomId = roomId
+      })
       this.socket.on('playerJoined', numOfPlayer => {
-        console.log(`a palyer has joined the room, the room has ${numOfPlayer} players now`)
+        // console.log(`a palyer has joined the room, the room has ${numOfPlayer} players now`)
+        this.numOfPlayer = numOfPlayer
       })
       this.socket.on('roomFull', message => {
         // console.log(message)
@@ -272,9 +300,19 @@ export default {
           this.endTheGame()
         }
       })
-      this.socket.on('playerLeft', message => { // warn that a player has left
+      this.socket.on('promoteHappened', data => { // handle auto promote when the other player promoted.
+        const promoteInfo = JSON.parse(data)
+        const { row, col } = promoteInfo[0]
+        const piece = this.chess.keyboard[row][col]
+        const newCoordinate = promoteInfo[1]
+        const promoteType = promoteInfo[2]
+        this.chess.promotion(piece, newCoordinate, promoteType)
+      })
+      this.socket.on('playerLeft', data => { // warn that a player has left
         // console.log(message)
+        const { message, numOfPlayer } = JSON.parse(data)
         this.showMessageWindow(message, 'warning')
+        this.numOfPlayer = numOfPlayer
       })
     }
   }

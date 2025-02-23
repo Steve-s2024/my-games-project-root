@@ -73,6 +73,7 @@ import { TimeFormat } from '@/assets/js/generalClasses/timeFormat'
 import axios from 'axios'
 import ChessGameConfig from '@/components/ChessGameConfig.vue'
 import MessageWindow from '@/components/MessageWindow.vue'
+import { setTimeout } from 'core-js'
 
 export default {
   name: 'ChessGame',
@@ -154,10 +155,12 @@ export default {
           this.chess.currPiece = null
         }
       }
-      if (this.chess.status === 'ended') {
-        this.showResultPannel = true
-        this.generateResults()
-      }
+      setTimeout(() => {
+        if (this.chess.status === 'ended') {
+          this.showResultPannel = true
+          this.generateResults()
+        }
+      }, 100)
     },
     addHighLight (piece) {
       const [row, col] = piece.coordinate
