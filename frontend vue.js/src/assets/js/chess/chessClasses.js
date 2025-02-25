@@ -378,6 +378,7 @@ class Chess {
     }
 
     updateCheckmatePiece (king) {
+      // console.log(king)
       this.checkmatePiece = king
     }
 

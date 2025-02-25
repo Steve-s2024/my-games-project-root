@@ -11,6 +11,7 @@
       v-model="chess.currSide"
       :chess="chess"
       @shiftTextQueue="shiftTextQueue"
+      @undoHistory="updateCheckmatePiece"
       :auth="{undo:true, textQueue:true}"
       />
       <KeyboardComp
@@ -98,7 +99,30 @@ export default {
       },
       showResultPannel: false,
       showConfigurePannel: false,
-      showMessage: false
+      showMessage: false,
+
+      checkmatePiece: null,
+      checkmateCoor: null
+    }
+  },
+  watch: {
+    checkmatePiece (newVal, oldVal) {
+      // console.log(newVal, oldVal)
+      if (newVal === oldVal) return
+      /**
+       * update the check mate effect according to the new checkmate piece
+       */
+      if (newVal === null) {
+        const [r, c] = this.checkmateCoor
+        const div = document.getElementById(r + ',' + c)
+        div.classList.remove('warning')
+        this.checkmateCoor = null
+      } else {
+        this.checkmateCoor = this.checkmatePiece.coordinate
+        const [r, c] = this.checkmateCoor
+        const div = document.getElementById(r + ',' + c)
+        div.classList.add('warning')
+      }
     }
   },
   async mounted () {
@@ -155,7 +179,16 @@ export default {
           this.chess.currPiece = null
         }
       }
+
       setTimeout(() => {
+        /*
+        update the checkmate peice inorder to assign the checkmate effect (red warning background color)
+        */
+        this.updateCheckmatePiece()
+
+        /**
+         * the game is ended, generate and display the result
+         */
         if (this.chess.status === 'ended') {
           this.showResultPannel = true
           this.generateResults()
@@ -176,12 +209,16 @@ export default {
         pieceElement.classList.remove('highlighted')
       }
     },
+    updateCheckmatePiece () {
+      this.checkmatePiece = this.chess.checkmatePiece
+    },
     exit () {
       this.$router.push('/HomePage')
     },
     restart () {
       this.showResultPannel = false
       this.chess.initChessGame(this.currLayout)
+      this.updateCheckmatePiece()
     },
     optLayout (idx) {
       this.showL = false

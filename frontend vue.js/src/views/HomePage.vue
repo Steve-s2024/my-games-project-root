@@ -1,11 +1,13 @@
 <template>
-  <GameDisplayView
-  v-for="(game, idx) in games"
-  :key="idx"
-  :title="game.title"
-  :image-src="game.imageSrc"
-  :click-function="startGame"
-  />
+  <div class="gameViewsWrapper">
+    <GameDisplayView
+    v-for="(game, idx) in games"
+    :key="idx"
+    :title="game.title"
+    :image-src="game.imageSrc"
+    :click-function="startGame"
+    />
+  </div>
 </template>
 <script>
 import GameDisplayView from '@/components/GameDisplayView.vue'
@@ -20,7 +22,11 @@ export default {
       games: [
         {
           title: 'Chess',
-          imageSrc: '/imgs/ChessGame.jpg'
+          imageSrc: [
+            '/imgs/chess01.png',
+            '/imgs/chess02.png',
+            '/imgs/chess03.png'
+          ]
         },
         {
           title: 'Typing',
@@ -37,6 +43,13 @@ export default {
             '/imgs/boxPhysics02.jpg',
             '/imgs/boxPhysics03.jpg',
             '/imgs/boxPhysics04.jpg'
+          ]
+        },
+        {
+          title: 'MultiplayerChess',
+          imageSrc: [
+            '/imgs/multiplayerChess01.png',
+            '/imgs/multiplayerChess02.png'
           ]
         }
       ]
@@ -57,6 +70,9 @@ export default {
           break
         case 'BoxPhysics':
           path = '/BoxPhysics'
+          break
+        case 'MultiplayerChess':
+          path = '/MultiplayerChess'
           break
         default:
           path = '/'

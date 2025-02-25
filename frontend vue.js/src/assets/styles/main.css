@@ -10,6 +10,9 @@ body {
     width: 100vw;
     height: 100vh;
 }
+.warning {
+    background-color: crimson !important;
+}
 #navBar{
     width: 100%;
     height: 10%;
@@ -23,7 +26,10 @@ body {
 }
 #navBar>a:hover{
     opacity: 0.5;
-}   
+}
+#gameViewsWrapper{
+    width: 100%;
+}
 #contentWrapper{
     position: relative;
     width: 100%;
@@ -90,13 +96,13 @@ body {
     border:2px solid blue !important;
 }
 #keyboardFrame{
+    border: 2px solid black;
     display: table-cell;
 }
 #keyboardFrame>.row>div {
     float: left;
     width: var(--block-width);
     height: var(--block-height);
-    border: 1px solid black;
     box-sizing: border-box;
     position: relative;
 }

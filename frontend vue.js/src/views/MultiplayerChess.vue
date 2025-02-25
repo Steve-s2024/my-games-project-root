@@ -106,7 +106,30 @@ export default {
 
       socket: null,
       userSide: '',
-      roomId: null
+      roomId: null,
+
+      checkmatePiece: null,
+      checkmateCoor: null
+    }
+  },
+  watch: {
+    checkmatePiece (newVal, oldVal) {
+      // console.log(newVal, oldVal)
+      if (newVal === oldVal) return
+      /**
+       * update the check mate effect according to the new checkmate piece
+       */
+      if (newVal === null) {
+        const [r, c] = this.checkmateCoor
+        const div = document.getElementById(r + ',' + c)
+        div.classList.remove('warning')
+        this.checkmateCoor = null
+      } else {
+        this.checkmateCoor = this.checkmatePiece.coordinate
+        const [r, c] = this.checkmateCoor
+        const div = document.getElementById(r + ',' + c)
+        div.classList.add('warning')
+      }
     }
   },
   async mounted () {
@@ -180,9 +203,21 @@ export default {
           this.chess.currPiece = null // remove the highlight effect
         }
       }
-      if (this.chess.status === 'ended') {
-        this.endTheGame()
-      }
+
+      setTimeout(() => {
+        /*
+        update the checkmate peice inorder to assign the checkmate effect (red warning background color)
+        */
+        this.updateCheckmatePiece()
+
+        /**
+         * the game is ended, generate and display the result
+         */
+        if (this.chess.status === 'ended') {
+          this.showResultPannel = true
+          this.generateResults()
+        }
+      }, 100)
     },
     addHighLight (piece) {
       const [row, col] = piece.coordinate
@@ -197,6 +232,9 @@ export default {
       if (pieceElement) {
         pieceElement.classList.remove('highlighted')
       }
+    },
+    updateCheckmatePiece () {
+      this.checkmatePiece = this.chess.checkmatePiece
     },
     generateResults () {
       this.gameResults.time = TimeFormat.formatBySecond(this.chess.gameTime)
@@ -243,6 +281,7 @@ export default {
     restart () {
       this.showResultPannel = false
       this.chess.initChessGame(this.currLayout)
+      this.updateCheckmatePiece()
     },
     endTheGame () {
       this.showResultPannel = true
@@ -303,6 +342,7 @@ export default {
         // console.log(row, col, this.chess.keyboard[row][col])
         const piece = this.chess.keyboard[row][col]
         this.chess.makeChessMove([[piece, move[1]]])
+        this.updateCheckmatePiece()
         if (this.chess.status === 'ended') {
           this.endTheGame()
         }
