@@ -11,6 +11,9 @@
           'height':BLOCK_HEIGHT + 'rem'
         }"
         @click="clickBlock([rowIdx, colIdx])"
+        @mousedown="$emit('mouseDown', [rowIdx, colIdx])"
+        @mouseup="$emit('mouseUp', [rowIdx, colIdx])"
+        @dragstart="(event) => event.preventDefault()"
         >
           <PieceComp
           v-if="KEYBOARD[rowIdx][colIdx] != null"

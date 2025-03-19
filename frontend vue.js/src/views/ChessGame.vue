@@ -20,6 +20,8 @@
       :HEIGHT="8"
       :KEYBOARD="chess.keyboard"
       :clickBlock="clickBlcok"
+      @mouseDown="mouseDown"
+      @mouseUp="mouseUp"
       :imgsObj="
         {
         whitepawn: '/imgs/chess/whitePawn.png',
@@ -102,7 +104,9 @@ export default {
       showMessage: false,
 
       checkmatePiece: null,
-      checkmateCoor: null
+      checkmateCoor: null,
+
+      coorToMove: null
     }
   },
   watch: {
@@ -298,6 +302,17 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    mouseDown (coor) {
+      // console.log(coor)
+      this.coorToMove = coor
+    },
+    mouseUp (coor) {
+      if (coor[0] === this.coorToMove[0] && coor[1] === this.coorToMove[1]) return
+      // console.log(this.coorToMove)
+      this.clickBlcok(this.coorToMove)
+      this.clickBlcok(coor)
+      this.coorToMove = null
     }
   }
 }

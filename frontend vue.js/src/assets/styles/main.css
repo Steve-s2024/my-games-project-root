@@ -100,6 +100,7 @@ body {
     display: table-cell;
 }
 #keyboardFrame>.row>div {
+    transition: all 2s ease;
     float: left;
     width: var(--block-width);
     height: var(--block-height);
