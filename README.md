@@ -1,5 +1,4 @@
 you can access the program at github page: https://steve-s2024.github.io/my-games-project-root/ChessGame
-deprecated!(you can access the program here: https://my-games-project-frontend-2a731435bbf8.herokuapp.com/)
 if you want to contribute instead of playing, you can run it on your local computer by following the instruction below
 
 the project consist of two part
